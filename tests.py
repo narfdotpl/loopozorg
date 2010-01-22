@@ -22,7 +22,7 @@ __author__ = 'Maciej Konieczny <hello@narf.pl>'
 
 class TestAttributes:
 
-    def test_all_clean_on_clean_init(self):
+    def test_set_default_values_on_clean_init(self):
         loop = Loop(parameters=[])
         for actual, expected in [
             (loop.raw, ''),
@@ -33,38 +33,48 @@ class TestAttributes:
         ]:
             assert_equals(actual, expected)
 
-    def test_all_parsed_correctly(self):
-        # prepare parameters
-        parameters = ['+']  # passed_special = True
+    def test_parse_input(self):
+        # parameters
+        parameters = ['+']
+        passed_special = True
+
         tracked_files = ['foo', 'bar']
         parameters.extend(tracked_files)
+
         main_file = tracked_files[-1]
+
         args = '-3 --verbose reset --hard'
         parameters.extend(args.split())
 
+        # test
         loop = Loop(parameters=parameters)
         for actual, expected in [
             (loop.raw, ' '.join(parameters)),
-            (loop.passed_special, True),
+            (loop.passed_special, passed_special),
             (loop.tracked_files, tracked_files),
             (loop.main_file, main_file),
             (loop.args, args),
         ]:
             assert_equals(actual, expected)
 
-    def test_format_attributes(self):
+    def test_represent_attributes_as_dict_of_strs(self):
+        passed_special = 'False'
+        main_file = 'baz'
+        tracked_files = 'foo bar ' + main_file
+        args = '--waka -waka waka'
+        raw = tracked_files + ' ' + args
+
         expected = {
-            'raw': 'foo bar baz --waka -waka waka',
-            'passed_special': 'False',
-            'tracked_files': 'foo bar baz',
-            'main_file': 'baz',
-            'args': '--waka -waka waka',
+            'raw': raw,
+            'passed_special': passed_special,
+            'tracked_files': tracked_files,
+            'main_file': main_file,
+            'args': args,
         }
-        loop = Loop(parameters=
-            expected['tracked_files'].split() \
-            + expected['args'].split()
-        )
+
+        loop = Loop(parameters=raw.split())
         actual = loop._get_attrs_as_dict_of_strs()
+
         assert_equals(actual, expected)
 
     def test_escape_raw(self):
@@ -83,13 +93,11 @@ class TestAttributes:
             actual = attrs[key]
             assert_equals(actual, expected)
 
-    def test_user_defined_attributes(self):
+    def test_use_userdefined_attributes(self):
         loop = Loop(parameters=[])
         loop.foo = None
-
         expected = 'None'
         actual = loop._get_attrs_as_dict_of_strs()['foo']
-
         assert_equals(actual, expected)
 
 
@@ -97,7 +105,7 @@ class TestCreateFile:
 
     def setup(self):
         """
-        Make temporary directory.
+        Create temporary directory.
         """
 
         self.directory = mkdtemp()
@@ -140,7 +148,7 @@ class TestCreateFile:
         with open(filepath) as f:
             assert_equals(f.read(), content)
 
-    def test_caller_name(self):
+    def test_get_caller_name(self):
         assert_equals(_get_caller_filename(), 'nosetests')
 
 

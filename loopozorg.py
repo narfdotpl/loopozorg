@@ -21,19 +21,22 @@ __author__ = 'Maciej Konieczny <hello@narf.pl>'
 class Loop(object):
 
     def __init__(self, command=None, parameters=sys.argv[1:]):
-        # be pesimistic
-        self.raw = ' '.join(imap(quote, parameters))
+        # set default values
+        self.raw = ' '
         self.passed_special = False
         self.tracked_files = []
         self.args = ''
 
-        # special
+        # get raw
+        self.raw = ' '.join(imap(quote, parameters))
+
+        # get special
         if parameters and parameters[0] == '+':
             self.passed_special = True
             parameters = parameters[1:]
 
         if parameters:
-            # args
+            # get args
             for i, parameter in enumerate(parameters):
                 if parameter.startswith('-'):
                     self.args = ' '.join(parameters[i:])
@@ -41,7 +44,7 @@ class Loop(object):
             else:  # if no break
                 i += 1
 
-            # tracked files
+            # get tracked files
             self.tracked_files = parameters[:i]
 
         if command:
@@ -92,7 +95,7 @@ class Loop(object):
 
 
 def create_file_if_it_doesnt_exist(filepath, template=None):
-    if template is not None and isfile(template) and not isfile(filepath):
+    if not isfile(filepath) and template is not None and isfile(template):
         copy(template, filepath)
     else:
         with open(filepath, 'a'):
