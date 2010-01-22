@@ -5,6 +5,7 @@ Test suite.
 Run with nose http://somethingaboutorange.com/mrl/projects/nose
 """
 
+from itertools import imap
 from os.path import isfile, join
 from shutil import rmtree
 from tempfile import mkdtemp
@@ -66,18 +67,18 @@ class TestAttributes:
         actual = loop._get_attrs_as_dict_of_strs()
         assert_equals(actual, expected)
 
-    def test_backslash_parameters(self):
-        expected = 'foo\ bar baz'
-        actual = Loop(parameters=['foo bar', 'baz']) \
-                 ._get_attrs_as_dict_of_strs()['raw']
+    def test_escape_raw(self):
+        expected = "'foo bar' baz"
+        actual = Loop(parameters=['foo bar', 'baz']).raw
         assert_equals(actual, expected)
 
-    def test_backslash_paths(self):
-        loop = Loop(parameters=['some file', 'main file'])
+    def test_escape_paths(self):
+        tracked_files = ['some file', 'main file']
+        loop = Loop(parameters=tracked_files)
         attrs = loop._get_attrs_as_dict_of_strs()
         for key, expected in [
-            ('tracked_files', 'some\ file main\ file'),
-            ('main_file', 'main\ file'),
+            ('tracked_files', ' '.join(imap(repr, tracked_files))),
+            ('main_file', repr(tracked_files[-1])),
         ]:
             actual = attrs[key]
             assert_equals(actual, expected)

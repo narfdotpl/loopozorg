@@ -8,6 +8,7 @@ from inspect import stack
 from itertools import imap
 from os import stat
 from os.path import basename, dirname, isfile, join, realpath, splitext
+from pipes import quote
 from shutil import copy
 from subprocess import PIPE, Popen, call
 import sys
@@ -21,7 +22,7 @@ class Loop(object):
 
     def __init__(self, command=None, parameters=sys.argv[1:]):
         # be pesimistic
-        self.raw = ' '.join(imap(backslash_spaces, parameters))
+        self.raw = ' '.join(imap(quote, parameters))
         self.passed_special = False
         self.tracked_files = []
         self.args = ''
@@ -49,10 +50,8 @@ class Loop(object):
     def _get_attrs_as_dict_of_strs(self):
         attrs = self.__dict__.copy()
 
-        attrs['tracked_files'] = ' '.join(imap(
-            backslash_spaces, self.tracked_files
-        ))
-        attrs['main_file'] = backslash_spaces(self.main_file)
+        attrs['tracked_files'] = ' '.join(imap(quote, self.tracked_files))
+        attrs['main_file'] = quote(self.main_file)
 
         for k, v in attrs.iteritems():
             if not isinstance(v, str):
@@ -90,10 +89,6 @@ class Loop(object):
                 old_mtime_sum = new_mtime_sum
                 call('clear;' + command, shell=True)
             sleep(1)  # one second
-
-
-def backslash_spaces(s):
-    return s.replace(' ', '\ ')
 
 
 def create_file_if_it_doesnt_exist(filepath, template=None):
