@@ -29,6 +29,7 @@ class TestAttributes:
             (loop.passed_special, False),
             (loop.tracked_files, []),
             (loop.main_file, ''),
+            (loop.bin, ''),
             (loop.args, ''),
         ]:
             assert_equals(actual, expected)
@@ -43,6 +44,8 @@ class TestAttributes:
 
         main_file = tracked_files[-1]
 
+        bin = main_file
+
         args = '-3 --verbose reset --hard'
         parameters.extend(args.split())
 
@@ -53,6 +56,7 @@ class TestAttributes:
             (loop.passed_special, passed_special),
             (loop.tracked_files, tracked_files),
             (loop.main_file, main_file),
+            (loop.bin, bin),
             (loop.args, args),
         ]:
             assert_equals(actual, expected)
@@ -60,6 +64,7 @@ class TestAttributes:
     def test_represent_attributes_as_dict_of_strs(self):
         passed_special = 'False'
         main_file = 'baz'
+        bin = main_file
         tracked_files = 'foo bar ' + main_file
         args = '--waka -waka waka'
         raw = tracked_files + ' ' + args
@@ -69,6 +74,7 @@ class TestAttributes:
             'passed_special': passed_special,
             'tracked_files': tracked_files,
             'main_file': main_file,
+            'bin': bin,
             'args': args,
         }
 
@@ -89,6 +95,7 @@ class TestAttributes:
         for key, expected in [
             ('tracked_files', ' '.join(imap(repr, tracked_files))),
             ('main_file', repr(tracked_files[-1])),
+            ('bin', repr(tracked_files[-1])),
         ]:
             actual = attrs[key]
             assert_equals(actual, expected)
@@ -98,6 +105,11 @@ class TestAttributes:
         loop.foo = None
         expected = 'None'
         actual = loop._get_attrs_as_dict_of_strs()['foo']
+        assert_equals(actual, expected)
+
+    def test_strip_main_file_extension_in_bin(self):
+        expected = 'foo'
+        actual = Loop(parameters=[expected + '.bar']).bin
         assert_equals(actual, expected)
 
 

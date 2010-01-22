@@ -55,12 +55,17 @@ class Loop(object):
 
         attrs['tracked_files'] = ' '.join(imap(quote, self.tracked_files))
         attrs['main_file'] = quote(self.main_file)
+        attrs['bin'] = quote(self.bin)
 
         for k, v in attrs.iteritems():
             if not isinstance(v, str):
                 attrs[k] = str(v)
 
         return attrs
+
+    @property
+    def bin(self):
+        return splitext(self.main_file)[0]
 
     @property
     def main_file(self):
