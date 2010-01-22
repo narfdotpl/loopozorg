@@ -6,11 +6,11 @@ Execute shell command on file modification.
 
 from inspect import stack
 from itertools import imap
-from os import stat
+from os import environ, stat
 from os.path import basename, dirname, isfile, join, realpath, splitext
 from pipes import quote
 from shutil import copy
-from subprocess import PIPE, Popen, call
+from subprocess import call
 import sys
 from time import sleep
 
@@ -123,7 +123,7 @@ def open_file_in_editor(filepath, edit=None):
     """
 
     if edit is None:
-        edit = Popen('echo -n "$EDIT"', shell=True, stdout=PIPE).stdout.read()
+        edit = environ.get('EDIT', None)
 
     if edit:
         call(edit + ' ' + filepath, shell=True)
