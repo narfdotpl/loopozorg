@@ -109,7 +109,10 @@ def _get_caller_filename():
 
 
 def get_mtime(filepath):
-    return stat(filepath).st_mtime
+    try:
+        return stat(filepath).st_mtime
+    except OSError:  # except file doesn't exist
+        return 0
 
 
 def open_file_in_editor(filepath, edit=None):
