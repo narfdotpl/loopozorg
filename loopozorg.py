@@ -6,10 +6,9 @@ Execute shell command on file modification.
 
 from inspect import stack
 from itertools import imap
-import os
+from os import stat
 from os.path import basename, dirname, isfile, join, realpath, splitext
 from shutil import copy
-import stat
 from subprocess import PIPE, Popen, call
 import sys
 from time import sleep
@@ -110,7 +109,7 @@ def _get_caller_filename():
 
 
 def get_mtime(filepath):
-    return os.stat(filepath)[stat.ST_MTIME]
+    return stat(filepath).st_mtime
 
 
 def open_file_in_editor(filepath, edit=None):
