@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-Execute shell command on file modification.
+Infrastructure for executing shell commands on file modification.
+
+The heart of this module is the `Loop` class -- see its docstrings for
+more information (I assume you're familiar with the README at this
+point).
 """
 
 from inspect import stack
@@ -20,6 +24,65 @@ __author__ = 'Maciej Konieczny <hello@narf.pl>'
 
 
 class Loop(object):
+    """
+    loopozorg's <3
+    ==============
+
+    The constructor parses command line parameters* and sets the following
+    attributes:
+
+      - `raw` -- string representing all parameters
+      - `passed_special` -- boolean indicating whether first parameter is a
+        plus sign
+      - `args` -- substring of `raw`, it begins with first parameter that
+        starts with a dash
+      - `tracked_files` -- list of file paths; that is all parameters apart
+        from `args` and special parameter
+
+    The constructor also sets two properties:
+
+      - `main_file` -- first tracked file
+      - `bin` -- main file without extension
+
+
+    Hopefully a short example can clarify the above.  Suppose you have a
+    script called `myloop.py`.  It contains a `loop = Loop()` line.  After
+    executing it like this
+
+        python myloop.py + foo.bar baz -waka waka
+
+    `loop` arguments have the following values:
+
+        raw: '+ foo.bar baz -waka waka'
+        passed_special: True
+        tracked_files: ['foo.bar', 'baz']
+        main_file: 'foo.bar'
+        bin: 'foo'
+        args: '-waka waka'
+
+
+    There are two ways of using this class:
+
+      1. Instantiating it with a single string argument, which is the
+         command that will be executed, i.e.
+
+             Loop('python {main_file} {args}; pyflakes {tracked_files}')
+
+         In this case there is no need to assign returned object to any
+         variable, because command is passed to the `run` method, which
+         starts an infinite loop.  This way you can write real-life, fully
+         operational loop scripts in two lines of code: import line and
+         `Loop('...`.
+
+      2. Instantiating it without any arguments, changing attributes of
+         returned object (and/or adding new) and manually calling the `run`
+         method with desired set of arguments (see its docstring for more
+         information).
+
+    ----------------
+    * I use the word "parameters" instead of "arguments" to prevent
+      confusion with the `args` attribute.
+    """
 
     def __init__(self, command=None, parameters=sys.argv[1:]):
         # set default values
@@ -77,6 +140,25 @@ class Loop(object):
 
     def run(self, command, template=None, enable_autotemplate=True,
             enable_special=True):
+        """
+        Every second check if any tracked file has been modified.  If it has,
+        clear the screen and execute the `command`.
+
+        Subject `command` to string formatting -- replace fields with string
+        representations of corresponding attributes, e.g. if `main_file` is
+        "README.txt" and `command` is "cat {main_file}", after formatting it
+        will be "cat README.txt".
+
+        If `enable_special` is true and special parameter was passed, create
+        main file (if it doesn't exist) and open it in editor. If `template`
+        file path is given, use its contents when creating main file.
+
+        If `template` file path is not given and `enable_autotemplate` is true,
+        use script's name to generate template path, e.g. when script name is
+        `python.py`, set `template` to `~/.loops/templates/python.txt`
+        (assuming loopozorg's location is `~/.loops/loopozorg`).
+        """
+
         if enable_special and self.passed_special:
             if enable_autotemplate and template is None:
                 templates_dir = realpath(join(
@@ -125,8 +207,8 @@ def open_file_in_editor(filepath, edit=None):
     """
     Open file in editor.
 
-    Use environment variable $EDIT.  It should be set according to $EDITOR and
-    should open editor in background -- $EDITOR usually opens editor in
+    Use environment variable $EDIT.  It should be set according to $EDITOR
+    and should open editor in background -- $EDITOR usually opens editor in
     foreground, which holds the loop.
     """
 

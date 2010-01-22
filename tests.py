@@ -1,8 +1,8 @@
 # encoding: utf-8
 """
-Test suite.
+loopozorg's test suite
 
-Run with nose http://somethingaboutorange.com/mrl/projects/nose
+run with nose http://somethingaboutorange.com/mrl/projects/nose
 """
 
 from itertools import imap

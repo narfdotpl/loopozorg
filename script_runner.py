@@ -2,6 +2,18 @@
 # encoding: utf-8
 """
 loopozorg script runner
+
+Canonically this utility is located in `~/.loops/loopozorg/`.  It should
+be given a short alias, e.g. "loop"
+
+    alias loop="python ~/.loops/loopozorg/script_runner.py"
+
+This way if you want to run a loopozorg script called `pacman.py`
+(located in `~/.loops/`) with "waka-waka-waka" parameter, all you have
+to do is
+
+    loop pacman waka-waka-waka
+
 """
 
 from itertools import imap
