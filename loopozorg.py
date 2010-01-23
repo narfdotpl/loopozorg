@@ -70,7 +70,7 @@ class Loop(object):
     @property
     def main_file(self):
         if self.tracked_files and isinstance(self.tracked_files, list):
-            return self.tracked_files[-1]
+            return self.tracked_files[0]
         else:
             return ''
 

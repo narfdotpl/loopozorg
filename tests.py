@@ -42,7 +42,7 @@ class TestAttributes:
         tracked_files = ['foo', 'bar']
         parameters.extend(tracked_files)
 
-        main_file = tracked_files[-1]
+        main_file = tracked_files[0]
 
         bin = main_file
 
@@ -65,7 +65,7 @@ class TestAttributes:
         passed_special = 'False'
         main_file = 'baz'
         bin = main_file
-        tracked_files = 'foo bar ' + main_file
+        tracked_files = main_file + ' foo bar'
         args = '--waka -waka waka'
         raw = tracked_files + ' ' + args
 
@@ -94,8 +94,8 @@ class TestAttributes:
         attrs = loop._get_attrs_as_dict_of_strs()
         for key, expected in [
             ('tracked_files', ' '.join(imap(repr, tracked_files))),
-            ('main_file', repr(tracked_files[-1])),
-            ('bin', repr(tracked_files[-1])),
+            ('main_file', repr(tracked_files[0])),
+            ('bin', repr(tracked_files[0])),
         ]:
             actual = attrs[key]
             assert_equals(actual, expected)
