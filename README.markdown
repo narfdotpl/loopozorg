@@ -190,7 +190,10 @@ Meta
 ----
 
 loopozorg is written by [Maciej Konieczny][].  This software is released
-into the [public domain][].
+into the [public domain][] and uses [semantic versioning][] for release
+numbering.
+
 
   [Maciej Konieczny]: http://narf.pl/
   [public domain]: http://unlicense.org/
+  [semantic versioning]: http://semver.org/
