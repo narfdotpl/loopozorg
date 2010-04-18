@@ -15,6 +15,8 @@ for [full history][].
   - Added conversion of sequences in replacement fields to strings of
     space-separated, quoted elements.
 
+  - Rewritten README.
+
 
 v0.1
 ----

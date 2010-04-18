@@ -3,59 +3,67 @@ loopozorg
 
 Infrastructure for executing shell commands on file modification.
 
-When writing code, you often have to take an additional action to see
-the result of what you've just written.  This is true regardless you
-write Python, C, HTML or LaTeX -- after saving the source code file, you
-have to run the compiler, interpreter, validator, test suite or simply
-refresh your browser.  These tasks are extremely boring, repetitive,
-distracting and force you to do too many things--like changing the
-active window to a terminal, reentering the last command and going back
-to your editor--just to discover you didn't put a semicolon at the end
-of that stupid line.
+When writing code, you often have to take an additional action to
+see results of what you've just written.  This is true regardless
+you write Python, Ruby, C, JavaScript, Markdown or LaTeX -- after
+making a change in source code, you have to run compiler, interpreter,
+validator, test suite... or simply refresh browser.  These activities
+are distracting and force you to do too many things--like switching to
+terminal, reentering previous command and going back to editor--just to
+discover you didn't put a semicolon at the end of that stupid line.
 
-loopozorg is the ⌘S instead of ⌘S ⌘⇥ ↑ ↩ ⌘⇥.  It provides you a way of
-writing super-short Python scripts containing reusable commands that are
-executed every time any tracked file is modified.  Even if you don't
-know Python, you should be able to write your own loop scripts just by
-looking at the examples.
+loopozorg is ⌘S instead of ⌘S ⌘⇥ ↑ ↩ ⌘⇥.  It lets you write short,
+reusable Python scripts that track your files and execute shell commands
+when these files are modified.  Even if you don't know Python, you will
+be able to write your own loop scripts just by looking at examples.
+
+
+Example
+-------
+
+(code speaks louder than words)
+
+    $ cat ~/.loops/python.py
+    from loopozorg import Loop
+    Loop('python {main_file} {args}; pyflakes {tracked_files}')
+
+    $ loop python pacman.py ghosts.py --waka-waka
+
+
+Visit [~narfdotpl/.loops][narf loops] for more examples.
+
+  [narf loops]: http://github.com/narfdotpl/dotfiles/tree/master/home/.loops
 
 
 Features
 --------
 
   - Python
-  - real-life, fully operational, reusable loop scripts in two lines of
-    code
-  - ability to automatically open file in editor before running a loop
+  - reusable, real-life loop scripts in two lines of code
   - file creation with basic template support
-  - automatic template assignment
-  - loop script runner
+  - ability to automatically open file in editor before running a loop
 
 
 Overview
 --------
 
-The idea behind loopozorg is simple: a set of shell commands you run to
-process your files is saved in a file.  This file is called "loop".
-Every loop is a Python script located in `~/.loops/`.  Every loop script
-imports and instantiates `Loop` object, which does most of the magic --
-it parses command line parameters and executes your commands every time
-any tracked file is modified.
-
-Accepted command line parameters format is
+The idea behind loopozorg is simple: you save sequence of shell commands
+in a file and put it in `~/.loops/` directory.  This file is a Python
+script.  It imports and instantiates a `Loop` object.  By default,
+`Loop` parses command line parameters that script is called with.  It
+expects them to be in the following format:
 
     [+] [file1 file2 ...] [-arg1 arg2 ...]
 
-This means all parameters are optional.  First parameter is called
-"special" and it is a plus sign.  It is followed by file paths separated
-by spaces.  Arguments are the last element, first of them has to start
-with a dash.
+All parameters are optional.  The first one is a plus and it's called
+"special".  It is followed by file paths.  Arguments are at the end,
+first of them has to start with a minus.
 
-Parameters are represented by `Loop` attributes:
+You can access parsed parameters via `Loop` attributes:
 
   - `raw` -- string representing all parameters
-  - `passed_special` -- boolean indicating whether first parameter is a
-    plus sign
+  - `passed_special` -- boolean indicating whether first parameter is
+    a plus
   - `tracked_files` -- list of file paths
   - `args` -- string representing arguments
 
@@ -65,11 +73,12 @@ Parameters are represented by `Loop` attributes:
   - `bin` -- main file without extension
 
 
-The exciting thing is that `Loop` attributes and properties can be used
-in your commands as [replacement fields][rf] (see the Example section),
-which makes it possible to write loop scripts in two lines of code.
+`Loop` properties and attributes--both built-in and created by you--can
+be used as [replacement fields][rf] in your commands (see *Step by step
+example* section).
 
   [rf]: http://docs.python.org/library/string.html#format-string-syntax
+
 
 There are two ways of using `Loop`:
 
@@ -84,106 +93,116 @@ There are two ways of using `Loop`:
      information).
 
 
-If special parameter is passed, loopozorg will try to create main file
-(if it doesn't exist) using a template located in `~/.loops/templates/`
-and named after loop script (see the Example section).  If template is
-not found, empty file will be created.  loopozorg will also try to open
-main file in editor.  It uses environment variable `$EDIT` to do this.
+Apart from parsing parameters, another thing that loopozorg does by
+defualt is creating main file using template and opening it in editor.
+loopozorg does this if loop script is run with special parameter
+("+"); you can disable this feature by calling `run` method with
+`enable_special=False` argument.  File creation and template support is
+described in *Step by step example* section; here I'll focus on opening
+files in editor. loopozorg uses environment variable `$EDIT` to do this.
 You should set it according to `$EDITOR`.  It should open editor in
 background -- `$EDITOR` usually opens it in foreground, which holds the
-loop.  Calling `run` method with `enable_special=False` argument
-disables features described in this paragraph.
+loop.
 
-loopozorg provides a convenient loop script runner, see Example and
-Installation sections for usage and installation information.
+loopozorg provides a convenient loop script runner, see *Step by
+step example* and *Installation* sections for usage and installation
+information.
 
 
-Example
--------
+Step by step example
+--------------------
+
+### Your first loop script
 
 Suppose you write a lot of Python.  There's a loop for that:
 
-    cat - > ~/.loops/python.py
+    $ cat - > ~/.loops/python.py
     from loopozorg import Loop
     Loop('python {main_file} {args}; pyflakes {tracked_files}')
     ^D
 
-While writing such code is not the best practice (loop would start, had
-someone imported this file), it's perfectly valid and does the job in
-two lines of code.  Now you can run your `foo.py` script with
+While writing such code is not a best Python practice (loop would start,
+had someone imported this file), it's perfectly valid and does the job
+in two lines of code.  Now you can run a `pacman.py` script with
 
-    loop python foo.py
+    $ loop python pacman.py
 
 It will be executed every time you save it.  Also, [PyFlakes][] will
-tell you, if your code has any defects.
+tell you if your code has any defects.  (You can also run this loop
+like you would run any Python script -- with `python ~/.loops/python.py
+pacman.py` command).
 
   [PyFlakes]: http://divmod.org/trac/wiki/DivmodPyflakes
 
-What if you don't have any `foo.py` file?  Well, you can run
 
-    loop python + foo.py
+### File creation and template support
 
-and before starting a loop, loopozorg will create `foo.py` and open it
-in editor.  It won't overwrite your file if it already exists.  But if
-it doesn't, loopozorg will try to create it using a template named after
-loop script -- in this case it would use
-`~/.loops/templates/python.txt`.
+What if there's no `pacman.py` file?  Well, if you run
 
-If you're willing to add another file to your project, run
+    $ loop python + pacman.py
 
-    loop python foo.py bar.py
+loopozorg will check, whether `pacman.py` exists.  If it does, loopozorg
+will open it in editor.  If it doesn't exist, loopozorg will try to
+create it using a template named after loop script you're using (in this
+case it would try to use `~/.loops/templates/python.txt`).  If there's
+no template, an empty file will be created.  After creating a file,
+loopozorg will open it in editor.
 
-Every time you save any of these two files, `foo.py` will be executed
+
+### Many tracked files
+
+If you want to add another file to your project, run
+
+    $ loop python pacman.py ghosts.py
+
+Every time you save any of these two files, `pacman.py` will be executed
 and both files will be checked by PyFlakes.
 
-If you'd like to pass some arguments to your script, you can!  They have
-to be placed after file paths and the first argument has to start with a
-dash -- otherwise it will be interpreted as another file.  That said, a
-possible way of running a loop is
 
-    loop python foo.py -n 37
+### Arguments
 
+You can pass arguments to your scripts.  They have to be placed after
+file paths and first argument has to start with a minus -- otherwise it
+will be interpreted as another file path.  So if you want to execute
+`pacman.py` script with a `--waka-waka` argument, run
 
-Of course all these features can be used together, so you can run your
-loop like this
-
-    loop python + pacman.py ghosts.py --waka-waka
+    $ loop python pacman.py --waka-waka
 
 
-Visit [~narfdotpl/.loops][narf loops] for more examples.
+### Rule them all
 
-  [narf loops]: http://github.com/narfdotpl/dotfiles/tree/master/.loops
+Of course, all loopozorg features can be used together:
+
+    $ loop python + pacman.py ghosts.py --waka-waka
 
 
 Installation
 ------------
 
 Following installation notes are guidelines, not instructions -- stop,
-if you don't know what you're doing. [Python][] (2.6 <=  version < 3.0)
+if you don't know what you're doing. [Python][] (2.6 <= version < 3.0)
 is required.
 
   [Python]: http://python.org/
 
 
-Get loopozorg
+ 1. get loopozorg
 
-    mkdir ~/.loops
-    cd ~/.loops
-    git clone git://github.com/narfdotpl/loopozorg
+        $ mkdir ~/.loops
+        $ cd !$
+        $ git clone git://github.com/narfdotpl/loopozorg
 
+ 2. alias script runner (optional)
 
-Alias script runner, e.g.
+        $ cat - >> ~/.profile
+        alias loop="python ~/.loops/loopozorg/script_runner.py"
+        ^D
 
-    cat - >> ~/.profile
-    alias loop="python ~/.loops/loopozorg/script_runner.py"
-    ^D
+ 3. set `$EDIT` (optional)
 
-
-Set `$EDIT`, e.g.
-
-    cat - >> ~/.profile
-    export EDIT="mvim"
-    ^D
+        $ cat - >> ~/.profile
+        export EDIT="mvim"
+        ^D
 
 
 Meta
@@ -192,7 +211,6 @@ Meta
 loopozorg is written by [Maciej Konieczny][].  This software is released
 into the [public domain][] and uses [semantic versioning][] for release
 numbering.
-
 
   [Maciej Konieczny]: http://narf.pl/
   [public domain]: http://unlicense.org/
