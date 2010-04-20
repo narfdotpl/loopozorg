@@ -7,6 +7,7 @@ run with nose http://somethingaboutorange.com/mrl/projects/nose
 
 from itertools import imap
 from os.path import isfile, join
+from pipes import quote
 from shutil import rmtree
 from tempfile import mkdtemp
 from time import sleep
@@ -83,19 +84,19 @@ class TestAttributes:
 
         assert_equals(actual, expected)
 
-    def test_escape_raw(self):
+    def test_quote_raw(self):
         expected = "'foo bar' baz"
         actual = Loop(parameters=['foo bar', 'baz']).raw
         assert_equals(actual, expected)
 
-    def test_escape_paths(self):
+    def test_quote_paths(self):
         tracked_files = ['some file', 'main file']
         loop = Loop(parameters=tracked_files)
         attrs = loop._get_attrs_as_dict_of_strs()
         for key, expected in [
-            ('tracked_files', ' '.join(imap(repr, tracked_files))),
-            ('main_file', repr(tracked_files[0])),
-            ('bin', repr(tracked_files[0])),
+            ('tracked_files', ' '.join(imap(quote, tracked_files))),
+            ('main_file', quote(tracked_files[0])),
+            ('bin', quote(tracked_files[0])),
         ]:
             actual = attrs[key]
             assert_equals(actual, expected)

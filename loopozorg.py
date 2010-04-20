@@ -11,8 +11,8 @@ point).
 from inspect import stack
 from itertools import imap
 from os import environ, stat
-from os.path import basename, dirname, expanduser, isfile, join, realpath, \
-                    splitext
+from os.path import basename, dirname, exists, expanduser, isfile, join, \
+                    realpath, splitext
 from pipes import quote
 from shutil import copy
 from subprocess import call
@@ -184,13 +184,14 @@ class Loop(object):
 
 
 def create_file_if_it_doesnt_exist(filepath, template=None):
-    if not isfile(filepath) and template is not None:
-        template = expanduser(template)
-        if isfile(template):
-            copy(template, filepath)
-    else:
-        with open(filepath, 'a'):
-            pass
+    if not exists(filepath):
+        if template is not None:
+            template = expanduser(template)
+            if isfile(template):
+                copy(template, filepath)
+        else:
+            with open(filepath, 'a'):
+                pass
 
 
 def _get_caller_filename():
