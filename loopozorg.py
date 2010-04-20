@@ -183,12 +183,28 @@ class Loop(object):
         command = command.format(**self._get_attrs_as_dict_of_strs())
         old_mtime_sum = -1
 
-        while True:
-            new_mtime_sum = sum(imap(get_mtime, self.tracked_files))
-            if old_mtime_sum != new_mtime_sum:
-                old_mtime_sum = new_mtime_sum
-                call('clear;' + command, shell=True)
-            sleep(1)  # one second
+        with exit_on_ctrl_c():
+            while True:
+                new_mtime_sum = sum(imap(get_mtime, self.tracked_files))
+                if old_mtime_sum != new_mtime_sum:
+                    old_mtime_sum = new_mtime_sum
+                    call('clear;' + command, shell=True)
+                sleep(1)  # one second
+
+
+class exit_on_ctrl_c(object):
+
+    def __init__(self, quiet=False):
+        self.quiet = quiet
+
+    def __enter__(self):
+        pass
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        if exc_type is KeyboardInterrupt:
+            if not self.quiet:
+                print '\nexiting'
+            exit()
 
 
 def create_file_if_it_doesnt_exist(filepath, template=None):

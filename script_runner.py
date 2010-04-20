@@ -22,6 +22,8 @@ from pipes import quote
 from subprocess import call
 from sys import argv, stderr
 
+from loopozorg import exit_on_ctrl_c
+
 
 __author__ = 'Maciej Konieczny <hello@narf.pl>'
 
@@ -38,7 +40,8 @@ def _main():
     loop_path = realpath(join(loops_dir, loop_name))
 
     if isfile(loop_path):
-        call('python {0} {1}'.format(loop_path, parameters), shell=True)
+        with exit_on_ctrl_c(quiet=True):
+            call('python {0} {1}'.format(loop_path, parameters), shell=True)
     else:
         print('File not found: ' + loop_path)
 

@@ -10,6 +10,8 @@ for [full history][].
 [v0.1+][]
 ---------
 
+  - Added exit message.
+
   - Added conversion of sequences in replacement fields to strings of
     space-separated, quoted elements.
 
