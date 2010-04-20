@@ -10,6 +10,9 @@ for [full history][].
 [v0.1+][]
 ---------
 
+  - Added conversion of sequences in replacement fields to strings of
+    space-separated, quoted elements.
+
 
 v0.1
 ----

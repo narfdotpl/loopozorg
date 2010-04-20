@@ -108,6 +108,24 @@ class TestAttributes:
         actual = loop._get_attrs_as_dict_of_strs()['foo']
         assert_equals(actual, expected)
 
+    def test_spaceseparated_sequences(self):
+        loop = Loop(parameters=['Albert E.', 'Fiedel C.'])
+        loop.pintores = ('Salvador D.', 'Pablo P.')
+        attrs = loop._get_attrs_as_dict_of_strs()
+
+        for key, expected in [
+            ('tracked_files', ' '.join(imap(quote, loop.tracked_files))),
+            ('pintores', ' '.join(imap(quote, loop.pintores))),
+        ]:
+            actual = attrs[key]
+            assert_equals(actual, expected)
+
+    def test_nonstr_stuff_in_sequences_to_str(self):
+        loop = Loop()
+        loop.seq = [0, None, False]
+        attrs = loop._get_attrs_as_dict_of_strs()
+        assert_equals(attrs['seq'], '0 None False')
+
     def test_strip_main_file_extension_in_bin(self):
         expected = 'foo'
         actual = Loop(parameters=[expected + '.bar']).bin

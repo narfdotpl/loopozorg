@@ -8,6 +8,7 @@ more information (I assume you're familiar with the README at this
 point).
 """
 
+from collections import Sequence
 from inspect import stack
 from itertools import imap
 from os import environ, stat
@@ -118,13 +119,20 @@ class Loop(object):
     def _get_attrs_as_dict_of_strs(self):
         attrs = self.__dict__.copy()
 
-        attrs['tracked_files'] = ' '.join(imap(quote, self.tracked_files))
+        # add properties
+        attrs['tracked_files'] = self.tracked_files
         attrs['main_file'] = quote(self.main_file)
         attrs['bin'] = quote(self.bin)
 
-        for k, v in attrs.iteritems():
-            if not isinstance(v, str):
-                attrs[k] = str(v)
+        # convert everything to strings
+        for key, value in attrs.iteritems():
+            if not isinstance(value, basestring):
+                if isinstance(value, Sequence):
+                    # convert sequence to string of space-separated,
+                    # quoted elements
+                    attrs[key] = ' '.join(imap(quote, imap(str, value)))
+                else:
+                    attrs[key] = str(value)
 
         return attrs
 
