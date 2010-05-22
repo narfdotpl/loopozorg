@@ -104,9 +104,9 @@ You should set it according to `$EDITOR`.  It should open editor in
 background -- `$EDITOR` usually opens it in foreground, which holds the
 loop.
 
-loopozorg provides a convenient loop script runner, see *Step by
-step example* and *Installation* sections for usage and installation
-information.
+loopozorg provides a convenient loop script runner, called `loop`.
+See *Step by step example* and *Installation* sections for usage and
+installation information.
 
 
 Step by step example
@@ -192,11 +192,9 @@ is required.
         $ cd !$
         $ git clone git://github.com/narfdotpl/loopozorg
 
- 2. alias script runner (optional)
+ 2. put `loop` in your `$PATH` (optional)
 
-        $ cat - >> ~/.profile
-        alias loop="python ~/.loops/loopozorg/script_runner.py"
-        ^D
+        $ ln -s ~/.loops/loopozorg/loop ~/bin
 
  3. set `$EDIT` (optional)
 
