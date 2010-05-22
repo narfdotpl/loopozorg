@@ -4,8 +4,7 @@
 Infrastructure for executing shell commands on file modification.
 
 The heart of this module is the `Loop` class -- see its docstrings for
-more information (I assume you're familiar with the README at this
-point).
+more information (I assume you're familiar with the README).
 """
 
 from collections import Sequence
@@ -34,10 +33,10 @@ class Loop(object):
     attributes:
 
       - `raw` -- string representing all parameters
-      - `passed_special` -- boolean indicating whether first parameter is a
-        plus sign
+      - `passed_special` -- boolean indicating whether first parameter is
+        a plus
       - `args` -- substring of `raw`, it begins with first parameter that
-        starts with a dash
+        starts with a minus
       - `tracked_files` -- list of file paths; that is all parameters apart
         from `args` and special parameter
 
@@ -45,22 +44,6 @@ class Loop(object):
 
       - `main_file` -- first tracked file
       - `bin` -- main file without extension
-
-
-    Hopefully a short example can clarify the above.  Suppose you have a
-    script called `myloop.py`.  It contains a `loop = Loop()` line.  After
-    executing it like this
-
-        python myloop.py + foo.bar baz -waka waka
-
-    `loop` arguments have the following values:
-
-        raw: '+ foo.bar baz -waka waka'
-        passed_special: True
-        tracked_files: ['foo.bar', 'baz']
-        main_file: 'foo.bar'
-        bin: 'foo'
-        args: '-waka waka'
 
 
     There are two ways of using this class:
@@ -155,12 +138,11 @@ class Loop(object):
 
         Subject `command` to string formatting -- replace fields with string
         representations of corresponding attributes, e.g. if `main_file` is
-        "README.txt" and `command` is "cat {main_file}", after formatting it
-        will be "cat README.txt".
+        "README.txt" and `command` is "cat {main_file}", change it to "cat
+        README.txt".
 
         If `enable_special` is true and special parameter was passed, create
-        main file (if it doesn't exist) and open it in editor. If `template`
-        file path is given, use its contents when creating main file.
+        main file (if it doesn't exist) and open it in editor.
 
         If `template` file path is not given and `enable_autotemplate` is true,
         use script's name to generate template path, e.g. when script name is
