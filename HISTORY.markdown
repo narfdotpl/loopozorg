@@ -7,8 +7,8 @@ for [full history][].
   [full history]: http://github.com/narfdotpl/loopozorg/commits/master
 
 
-[v0.1+][]
----------
+[v0.2][]
+--------
 
   - Renamed `script_runner.py` to `loop`.
 
@@ -26,4 +26,4 @@ v0.1
 Initial release.
 
 
-  [v0.1+]: http://github.com/narfdotpl/loopozorg/compare/v0.1...master
+  [v0.2]: http://github.com/narfdotpl/loopozorg/compare/v0.1.0...v0.2.0
