@@ -7,6 +7,10 @@ for [full history][].
   [full history]: http://github.com/narfdotpl/loopozorg/commits/master
 
 
+[v0.3dev][]
+-----------
+
+
 [v0.2][]
 --------
 
@@ -26,4 +30,5 @@ v0.1
 Initial release.
 
 
+  [v0.3dev]: http://github.com/narfdotpl/loopozorg/compare/v0.2.0...master
   [v0.2]: http://github.com/narfdotpl/loopozorg/compare/v0.1.0...v0.2.0

@@ -21,7 +21,7 @@ from time import sleep
 
 
 __author__ = 'Maciej Konieczny <hello@narf.pl>'
-__version__ = '0.2.0'
+__version__ = '0.3.0dev'
 
 
 class Loop(object):
