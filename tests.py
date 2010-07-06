@@ -17,7 +17,8 @@ from nose.core import run
 from nose.tools import assert_equals, raises
 
 from loopozorg import Loop, create_file_if_it_doesnt_exist, \
-                      _get_caller_filename, get_mtime, open_file_in_editor
+                      exit_on_ctrl_c, _get_caller_filename, get_mtime, \
+                      open_file_in_editor
 
 
 __author__ = 'Maciej Konieczny <hello@narf.pl>'
@@ -132,6 +133,19 @@ class TestAttributes:
         expected = 'foo'
         actual = Loop(parameters=[expected + '.bar']).bin
         assert_equals(actual, expected)
+
+
+class TestCtrlC:
+
+    @raises(SystemExit)
+    def test_exit_on_keyboard_interrupt(self):
+        with exit_on_ctrl_c():
+            raise KeyboardInterrupt()
+
+    @raises(ValueError)
+    def test_dont_handle_other_exceptions(self):
+        with exit_on_ctrl_c():
+            raise ValueError()
 
 
 class TestCreateFile:
