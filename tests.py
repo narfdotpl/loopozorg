@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # encoding: utf-8
 """
 loopozorg's test suite
@@ -12,6 +13,7 @@ from shutil import rmtree
 from tempfile import mkdtemp
 from time import sleep
 
+from nose.core import run
 from nose.tools import assert_equals, raises
 
 from loopozorg import Loop, create_file_if_it_doesnt_exist, \
@@ -180,7 +182,7 @@ class TestCreateFile:
             assert_equals(f.read(), content)
 
     def test_get_caller_name(self):
-        assert_equals(_get_caller_filename(), 'nosetests')
+        assert _get_caller_filename() in ['nosetests', 'tests.py']
 
 
 class TestOpenFile:
@@ -188,3 +190,7 @@ class TestOpenFile:
     @raises(EnvironmentError)
     def test_raise_exception_if_EDIT_is_not_set(self):
         open_file_in_editor(filepath=None, edit='')
+
+
+if __name__ == '__main__':
+    run()
