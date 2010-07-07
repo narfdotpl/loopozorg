@@ -8,6 +8,7 @@ more information (I assume you're familiar with the README).
 """
 
 from collections import Sequence
+from contextlib import contextmanager
 from inspect import stack
 from itertools import imap
 from os import environ, stat
@@ -174,21 +175,6 @@ class Loop(object):
                 sleep(1)  # one second
 
 
-class exit_on_ctrl_c(object):
-
-    def __init__(self, quiet=False):
-        self.quiet = quiet
-
-    def __enter__(self):
-        pass
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        if exc_type is KeyboardInterrupt:
-            if not self.quiet:
-                print '\nexiting'
-            exit()
-
-
 def create_file_if_it_doesnt_exist(filepath, template=None):
     if not exists(filepath):
         if template is not None:
@@ -198,6 +184,16 @@ def create_file_if_it_doesnt_exist(filepath, template=None):
         else:
             with open(filepath, 'a'):
                 pass
+
+
+@contextmanager
+def exit_on_ctrl_c(quiet=False):
+    try:
+        yield
+    except KeyboardInterrupt:
+        if not quiet:
+            print '\nexiting'
+        exit()
 
 
 def _get_caller_filename():
