@@ -217,7 +217,7 @@ def open_file_in_editor(filepath, edit=None):
     """
 
     if edit is None:
-        edit = environ.get('EDIT', None)
+        edit = environ.get('EDIT')
 
     if edit:
         call(edit + ' ' + filepath, shell=True)
