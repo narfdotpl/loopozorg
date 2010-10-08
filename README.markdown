@@ -190,7 +190,7 @@ is required.
 
         $ mkdir ~/.loops
         $ cd !$
-        $ git clone git://github.com/narfdotpl/loopozorg
+        $ git clone http://github.com/narfdotpl/loopozorg.git
 
  2. put `loop` in your `$PATH` (optional)
 
