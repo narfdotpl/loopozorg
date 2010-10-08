@@ -38,10 +38,10 @@ Visit [~narfdotpl/.loops][narf loops] for more examples.
 Features
 --------
 
-  - Python
   - reusable, real-life loop scripts in two lines of code
   - file creation with basic template support
-  - ability to automatically open file in editor before running a loop
+  - ability to automatically open file in editor before starting a loop
+  - Python
 
 
 Overview
@@ -112,7 +112,7 @@ installation information.
 Step by step example
 --------------------
 
-### Your first loop script
+### Your first loop
 
 Suppose you write a lot of Python.  There's a loop for that:
 
