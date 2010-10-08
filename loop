@@ -2,6 +2,11 @@
 # encoding: utf-8
 """
 Loop script runner.
+
+Usage:
+
+    loop <loop-name>|<ad-hoc-loop> <parameters>
+
 """
 
 from itertools import imap
@@ -10,28 +15,31 @@ from pipes import quote
 from subprocess import call
 from sys import argv, stderr
 
-from loopozorg import exit_on_ctrl_c
+from loopozorg import Loop, exit_on_ctrl_c
 
 
 __author__ = 'Maciej Konieczny <hello@narf.pl>'
 
 
 def _main():
+    # read arguments
     if len(argv) < 2:
         print >> stderr, __doc__[1:-1]
         exit(1)
+    first_arg = argv[1]
+    other_args = argv[2:]
 
-    loop_name = argv[1] + '.py'
-    parameters = ' '.join(imap(quote, argv[2:]))
-
+    # suppose first argument is a loop name
     loops_dir = join(dirname(realpath(__file__)), '..')
-    loop_path = realpath(join(loops_dir, loop_name))
-
+    loop_path = realpath(join(loops_dir, first_arg + '.py'))
     if isfile(loop_path):
+        parameters = ' '.join(imap(quote, other_args))
         with exit_on_ctrl_c(quiet=True):
             call('python {0} {1}'.format(loop_path, parameters), shell=True)
     else:
-        print('File not found: ' + loop_path)
+        # assume first argument is an ad hoc loop
+        Loop(parameters=other_args).run(command=first_arg,
+                                        enable_autotemplate=False)
 
 if __name__ == '__main__':
     _main()

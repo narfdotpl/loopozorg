@@ -13,9 +13,10 @@ terminal, reentering previous command and going back to editor--just to
 discover you didn't put a semicolon at the end of that stupid line.
 
 loopozorg is ⌘S instead of ⌘S ⌘⇥ ↑ ↩ ⌘⇥.  It lets you write short,
-reusable Python scripts that track your files and execute shell commands
-when these files are modified.  Even if you don't know Python, you will
-be able to write your own loop scripts just by looking at examples.
+reusable Python scripts (or ad hoc loops right in your shell) that track
+given files and execute shell commands when these files are modified.
+Even if you don't know Python, you will be able to write your own loops
+just by looking at examples.
 
 
 Example
@@ -29,6 +30,11 @@ Example
 
     $ loop python pacman.py ghosts.py --waka-waka
 
+Or ad hoc:
+
+    $ loop 'python {main_file} {args}; pyflakes {tracked_files}' \
+      pacman.py ghosts.py --waka-waka
+
 
 Visit [~narfdotpl/.loops][narf loops] for more examples.
 
@@ -39,6 +45,7 @@ Features
 --------
 
   - reusable, real-life loop scripts in two lines of code
+  - ad hoc loops right in your shell
   - file creation with basic template support
   - ability to automatically open file in editor before starting a loop
   - Python
@@ -174,6 +181,16 @@ will be interpreted as another file path.  So if you want to execute
 Of course, all loopozorg features can be used together:
 
     $ loop python + pacman.py ghosts.py --waka-waka
+
+
+### Shortcut
+
+If you don't feel like creating full-blown script for a really short
+or temporary loop, you can call `loop` with your command as the first
+argument (instead of loop name), e.g.:
+
+    $ loop 'python {main_file} {args}; pyflakes {tracked_files}' \
+      + pacman.py ghosts.py --waka-waka
 
 
 Installation

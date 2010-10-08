@@ -10,6 +10,8 @@ for [full history][].
 [v0.3dev][]
 -----------
 
+  - Added support for ad hoc loops.
+
 
 [v0.2][]
 --------
